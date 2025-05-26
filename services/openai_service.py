@@ -1,7 +1,8 @@
 from clients.openai_client import OpenAIClient
 from neo4j_graphrag.experimental.components.text_splitters.fixed_size_splitter import FixedSizeSplitter
 from neo4j_graphrag.experimental.components.entity_relation_extractor import LLMEntityRelationExtractor
-from neo4j_graphrag.experimental.components.types import TextChunks
+from neo4j_graphrag.experimental.components.types import TextChunks, Neo4jGraph
+
 
 class OpenAIService:
     def __init__(self, openai_client: OpenAIClient):
@@ -18,11 +19,11 @@ class OpenAIService:
             all_chunks.extend(result.chunks)
         return all_chunks
 
-    async def embed_chunks(self, chunks):
+    async def embed_chunks(self, chunks) -> TextChunks:
         text_chunks = TextChunks(chunks=chunks)
         return await self.openai_client.embed_chunks(text_chunks)
 
-    async def extract_entities_relations(self, prompt_template, examples, schema, chunk):
+    async def extract_entities_relations(self, prompt_template, examples, schema, chunk) -> Neo4jGraph:
         extractor = LLMEntityRelationExtractor(
             llm=self.openai_client.get_llm(),
             prompt_template=prompt_template,

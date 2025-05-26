@@ -7,7 +7,7 @@ user_router = APIRouter()
 async def user_route(
     file_path: str = Query(None),
     hushh_id: str = Query(...),  # Required parameter
-):
+) -> JSONResponse:
     if not file_path:
         raise HTTPException(status_code=400, detail="file_path is required.")
 
@@ -15,10 +15,6 @@ async def user_route(
     try:
         result = await graph_rag_service.process_pdf(
             pdf_path=file_path,
-            prompt_template="...",  # You may want to pass these via API or config
-            examples="...",
-            schema_entities={},
-            schema_relations={},
             hushh_id=hushh_id
         )
         return JSONResponse(content={"message": "Processing complete", "result": result})
